@@ -1,0 +1,25 @@
+version: '2'
+services:
+
+  leonardo:
+    build:
+      context: .
+    ports:
+      - "127.0.0.1:2222:22"
+    ## use the lines below if you want to make the container accessible from other hosts. This might be a security
+    ## risk, consider using ssh forwarding to connect to the exposed port, so you don't have to expose the ssh server
+    ## inside the container to the network
+    # ports:
+    #   - "2222:22"
+    volumes:
+      - leonardo_data:/home/leonardo/.leonardo
+    ## use the lines below if you want to mount an existing `.leonardo` config folder from this folder
+    ## Note that you need to make the folder writeable to "others" (e.g. `chmod -vR 757 .leonardo`), otherwise leonardo
+    ## might not be able to write to the existing files/folders, as it may run with a different UID as your user.
+    ## It is possible to instruct Docker to run with a specific UID, but we need to run the ssh server as root
+    # volumes:
+    #   - ./.leonardo:/home/leonardo/.leonardo
+
+volumes:
+  # persist leonardo config outside the Docker ephemeral filesystem, in a volume that is re-used by new containers
+  leonardo_data:
